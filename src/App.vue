@@ -1,26 +1,439 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+   <div class="page">
+      <h1>{{fromCurrency.name}} to {{toCurrency.name}}</h1>
+      <h2>Convert {{fromCurrency.code}} to {{toCurrency.code}} at today's exchange rate.</h2>
+      <div class="converter">
+         <div class="area1">
+            <label for="amount" class="label">Amount:</label>
+            <input type="number" inputmode="decimal" tabindex="0" id="amount" name="amount" v-model="fromAmount" @keyup="toAmount = calcToAmount" @change="toAmount = calcToAmount"/>
+            <CustomSelect 
+            :currencies="currencies"
+            :currency="fromCurrency"
+            @selected="fromCurrency = $event; fetchRate()" 
+            />
+         </div>
+
+         <div class="arrow">
+            <i class="fas fa-arrow-right"></i>
+         </div>
+
+         <div class="area2">
+            <label for="converted-to" class="label">Converted to:</label>
+            <input type="number" id="converted-to" inputmode="decimal" tabindex="0" name="converted-to" v-model="toAmount" @keyup="fromAmount = calcFromAmount" @change="fromAmount = calcFromAmount"/>
+            <CustomSelect 
+            :currencies="currencies"
+            :currency="toCurrency"
+            @selected="toCurrency = $event; fetchRate()" />
+         </div>
+
+         <div class="show-rate">
+            <p>
+               1 {{ fromCurrency.code }} = <span class="rate">{{ rate }}</span> {{ toCurrency.code }}
+            </p>
+            <span>
+               Rates are updated daily at 16.00 CET by the European Central Bank <br/>
+               <a href="https://exchangeratesapi.io/">https://exchangeratesapi.io/</a>
+            </span>
+         </div>
+      </div>
+   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import CustomSelect from './components/CustomSelect.vue'
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+   name: 'App',
+   data () {
+      return {
+         currencies:[
+            {
+               name: "British Pound Sterling",
+               search: "GBP UK BRITISH POUND ",
+               code: "GBP",
+               flag:  "./flags/gbp.png"
+            },
+            {
+               name:"US Dollars",
+               search: "USD USA AMERICAN DOLLAR ",
+               code: "USD",
+               flag: "./flags/usd.png"
+            },
+            {
+               name: "Euro",
+               search: "EURO EUROPE",
+               code: "EUR",
+               flag:  "./flags/eur.png"
+            },
+            {
+               name:"Swiss Francs",
+               search: "CHF SWISS FRANC ",
+               code: "CHF",
+               flag:  "./flags/chf.png"
+            },
+            {
+               name:"Canadian Dollars",
+               search: "CAD CANADIAN DOLLAR ",
+               code: "CAD",
+               flag:  "./flags/cad.png"
+            },
+            {
+               name: "Hong Kong Dollars",
+               search: "HKD HONG KONG DOLLAR ",
+               code: "HKD",
+               flag:  "./flags/hkd.png"
+            },
+            {
+               name: "Japanese Yen",
+               search: "JPY JAPANESE YEN ",
+               code: "JPY",
+               flag:  "./flags/jpy.png"
+            },
+            {
+               name: "Australian Dollar",
+               search: "AUD AUSTRALIAN DOLLAR ",
+               code: "AUD",
+               flag:  "./flags/aud.png"
+            },
+            {
+               name: "Indian Rupee",
+               search: "INR INDIAN RUPEE ",
+               code: "INR",
+               flag:  "./flags/inr.png"
+            },
+            {
+               name: "Chinese Yuan",
+               search: "CNY CHINA CHINESE YUAN ",
+               code: "CNY",
+               flag:  "./flags/cny.png"
+            },
+            {
+               name: "Icelandic Krona",
+               search: "ISK ICELANDIC KRONA ",
+               code: "ISK",
+               flag:  "./flags/isk.png"
+            },
+            {
+               name: "Philippine Peso",
+               search: "PHP PHILIPPINE PESO ",
+               code: "PHP",
+               flag:  "./flags/php.png"
+            },
+            {
+               name: "Danish Krone",
+               search: "DKK DENMARK DANISH KRONE ",
+               code: "DKK",
+               flag:  "./flags/dkk.png"
+            },
+            {
+               name: "Hungarian Forint",
+               search: "HUF HUNGARIAN FORINT ",
+               code: "HUF",
+               flag:  "./flags/huf.png"
+            },
+            {
+               name: "Czech Koruna",
+               search: "CZK CZECH KORUNA ",
+               code: "CZK",
+               flag:  "./flags/czk.png"
+            },
+            {
+               name: "Romanian Leu",
+               search: "RON ROMANIAN LEU ",
+               code: "RON",
+               flag:  "./flags/ron.png"
+            },
+            {
+               name: "Swedish Krona",
+               search: "SEK SWEDISH KRONA ",
+               code: "SEK",
+               flag:  "./flags/sek.png"
+            },
+            {
+               name: "Indonesian Rupiah",
+               search: "IDR INDONESIAN RUPIAH ",
+               code: "IDR",
+               flag:  "./flags/idr.png"
+            },
+            {
+               name: "Brazilian Real",
+               search: "BRL BRAZILIAN REAL ",
+               code: "BRL",
+               flag:  "./flags/brl.png"
+            },
+            {
+               name: "Russian Ruble",
+               search: "RUB RUSSIAN RUBLE ",
+               code: "RUB",
+               flag:  "./flags/rub.png"
+            },
+            {
+               name: "Croatian Kuna",
+               search: "HRK CROATIAN KUNA ",
+               code: "HRK",
+               flag:  "./flags/hrk.png"
+            },
+            {
+               name: "Thai Baht",
+               search: "THB THAI BAHT ",
+               code: "THB",
+               flag:  "./flags/thb.png"
+            },
+            {
+               name: "Singaporean Dollars",
+               search: "SGD SINGAPOREAN DOLLAR ",
+               code: "SGD",
+               flag:  "./flags/sgd.png"
+            },
+            {
+               name: "Polish Zloty",
+               search: "PLN POLISH ZLOTY ",
+               code: "PLN",
+               flag:  "./flags/pln.png"
+            },
+            {
+               name: "Bulgarian Lev",
+               search: "BGN BULGARIAN LEV ",
+               code: "BGN",
+               flag:  "./flags/bgn.png"
+            },
+            {
+               name: "Turkish Lira",
+               search: "TRY TURKISH LIRA ",
+               code: "TRY",
+               flag:  "./flags/try.png"
+            },
+            {
+               name: "Norwegian Krone",
+               search: "NOK NORWEGIAN KRONE ",
+               code: "NOK",
+               flag:  "./flags/nok.png"
+            },
+            {
+               name: "New Zealand Dollars",
+               search: "NZD NEW ZEALAND DOLLAR ",
+               code: "NZD",
+               flag:  "./flags/nzd.png"
+            },
+            {
+               name: "South African Rand",
+               search: "ZAR SOUTH AFRICAN RAND ",
+               code: "ZAR",
+               flag:  "./flags/zar.png"
+            },
+            {
+               name: "Mexican Peso",
+               search: "MXN MEXICAN PESO ",
+               code: "MXN",
+               flag:  "./flags/mxn.png"
+            },
+            {
+               name: "Israeli New Shekel",
+               search: "ILS ISRAELI NEW SHEKEL",
+               code: "ILS",
+               flag:  "./flags/ils.png"
+            },
+            {
+               name: "South Korean Won",
+               search: "KRW SOUTH KOREAN WON",
+               code: "KRW",
+               flag:  "./flags/krw.png"
+            },
+            {
+               name: "Malaysian Ringgit",
+               search: "MYR MALAYSIAN RINGGIT",
+               code: "MYR",
+               flag:  "./flags/myr.png"
+            }
+         ],
+         rate: "",
+         fromAmount: "1000",
+         toAmount: "",
+         selectOpen: false,
+         fromCurrency:
+            {
+               name: "British Pound Sterling",
+               code: "GBP",
+               flag:  "./flags/gbp.png"
+            },
+         toCurrency:             
+            {
+               name: "US Dollars",
+               code: "USD",
+               flag: "./flags/usd.png"
+            }
+      }
+   },
+
+   computed: {
+      calcToAmount () {
+         return (this.fromAmount * this.rate).toFixed(2)
+      },
+      calcFromAmount () {
+         return (this.toAmount / this.rate).toFixed(2)
+      }
+   },
+
+   methods: {
+      fetchRate () {
+         fetch(`https://api.exchangeratesapi.io/latest?symbols=${this.toCurrency.code}&base=${this.fromCurrency.code}`)
+         .then( res => res.json() )
+         .then( data => data.rates[Object.keys(data.rates)[0]] )
+         .then( rate => {
+            this.rate = rate;
+            return rate * this.fromAmount;
+         })
+         .then( toAmount => this.toAmount = toAmount.toFixed(2))
+         .catch(err => console.error(err))
+      }
+   },
+   
+   mounted: function () {
+      this.fetchRate()
+   },
+
+   components: {CustomSelect}
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+body {
+   background: #1f2142;
+}
+.page {
+   margin: auto;
+   max-width: 1000px;
+   font-family: 'Open Sans', sans-serif;
+   color: #373468;
+   display: flex;
+   flex-direction: column;
+}
+h1 {
+   color: white;
+   font-size: 36px;
+   margin: 60px auto 10px 30px;
+}
+h2 {
+   color: #c9c9c9;
+   margin: 5px auto 25px 30px;
+   font-weight: 400;
+}
+.converter {
+   display: grid;
+   grid-template-columns: 40px 1fr 60px 1fr 40px;
+   grid-template-rows: 40px 1fr 1fr 40px;
+   grid-template-areas:
+      ". . . . ."
+      ". area1 arrow area2 ."
+      ". rates rates rates ."
+      ". . . . .";
+   border-radius: 4px;
+   color: #373468;
+   background: white;
+}
+.arrow {
+   grid-area: arrow;
+   margin: auto;
+}
+.area1 { grid-area: area1; }
+.area2 { grid-area: area2; }
+.area1:focus-within > label, .area2:focus-within > label  {
+   color: #00c7cb;
+}
+
+.area1, .area2 {
+   display: grid;
+   grid-template-columns: 1fr 120px;
+   grid-template-rows: 25% 75%;
+   grid-template-areas: 
+      "label ."
+      "amount select";
+}
+.area1.label, .area2.label { grid-area: label; }
+.area1 input, .area2 input { grid-area: amount}
+.area1 div.custom-select, .area2 div.custom-select {grid-area: select;}
+
+.show-rate {
+   font-size: 22px;
+   grid-area: rates;
+}
+.show-rate p{
+   margin: 10px auto;
+}
+.show-rate span {
+   font-size: 12px;;
+}
+span.rate {
+   color:#00c7cb;
+   font-size: 22px;
+}
+label {
+   color: #4e3468;
+   font-size: 14px;
+   margin: 5px 10px;
+}
+input {
+   padding: 0 10px;
+   height: 60px;
+   margin: 5px;
+   font-size: 18px;
+   border: 1px #ccc solid;
+   border-radius: 3px;
+   color: #4e3468;
+   outline-color: #00e7eb;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+input:hover {
+   border: 1px black solid;
+}
+
+
+@media only screen and (max-width: 830px) {
+   .converter {
+      grid-template-columns: 40px 1fr 40px;
+      grid-template-rows: 40px 1fr 30px 1fr 1.2fr 40px;
+      grid-template-areas:
+         ". . ."
+         ". area1 ."
+         ". arrow ."
+         ". area2 ."
+         ". rates ."
+         ". . .";
+   }
+   h1 {
+      font-size: 30px;
+      margin: 60px 30px 0 30px;
+   }
+   h2 {
+      margin: 5px 30px 25px 30px;
+      font-size: 20px;
+   }
+}
+@media only screen and (max-width: 550px) {
+   .converter { grid-template-columns: 20px 1fr 20px;}
+   h1 {
+      font-size: 24px;
+      margin: 10px 10px 0 10px;
+   }
+   h2 {
+      margin: 5px 10px 25px 10px;
+      font-size: 16px;
+   }
+}
+@media only screen and (max-width: 400px) {
+   input{width: 170px;} 
+}
+@media only screen and (max-width: 380px) {
+   input{width: 150px;}
+}
+@media only screen and (max-width: 360px) {
+   input{width: 130px;}
+}
+@media only screen and (max-width: 340px) {
+   input{width: 110px;}
 }
 </style>
