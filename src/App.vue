@@ -298,7 +298,7 @@ export default {
 
 <style>
 body {
-   background-image: url(/bg.png);
+   background-image: url("../public/bg.png");
    background-repeat: repeat-x;
    background-color: rgb(225, 231, 237);
 }
