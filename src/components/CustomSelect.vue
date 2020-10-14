@@ -122,7 +122,7 @@ span {
    font-size: 18px;
    border: 1px #ccc solid;
    border-radius: 3px;
-   color: #4e3468;
+   color: #263a66;
    outline-color: #00e7eb;
    cursor: pointer;
    user-select: none;
@@ -140,7 +140,7 @@ span {
   width: 0;
   height: 0;
   border: 5px solid transparent;
-  border-color: #4e3468 transparent transparent transparent;
+  border-color: #263a66 transparent transparent transparent;
 }
 
 .custom-select .items {
@@ -156,7 +156,7 @@ span {
 }
 
 .custom-select .items div {
-  color: #4e3468;
+  color: #263a66;
   padding-left: 1em;
   cursor: pointer;
   user-select: none;

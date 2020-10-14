@@ -298,13 +298,15 @@ export default {
 
 <style>
 body {
-   background: #1f2142;
+   background-image: url(/bg.png);
+   background-repeat: repeat-x;
+   background-color: rgb(225, 231, 237);
 }
 .page {
    margin: auto;
    max-width: 1000px;
    font-family: 'Open Sans', sans-serif;
-   color: #373468;
+   color: #263a66;
    display: flex;
    flex-direction: column;
 }
@@ -328,8 +330,9 @@ h2 {
       ". rates rates rates ."
       ". . . . .";
    border-radius: 4px;
-   color: #373468;
+   color: #263a66;
    background: white;
+   box-shadow: 0 0 10px #666;
 }
 .arrow {
    grid-area: arrow;
@@ -368,7 +371,7 @@ span.rate {
    font-size: 22px;
 }
 label {
-   color: #4e3468;
+   color: #263a66;
    font-size: 14px;
    margin: 5px 10px;
 }
@@ -379,7 +382,7 @@ input {
    font-size: 18px;
    border: 1px #ccc solid;
    border-radius: 3px;
-   color: #4e3468;
+   color: #263a66;
    outline-color: #00e7eb;
 }
 input[type=number]::-webkit-inner-spin-button, 
@@ -390,6 +393,7 @@ input[type=number]::-webkit-outer-spin-button {
 input:hover {
    border: 1px black solid;
 }
+a{color: #47a97c;}
 
 
 @media only screen and (max-width: 830px) {
