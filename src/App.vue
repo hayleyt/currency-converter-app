@@ -9,11 +9,11 @@
             <CustomSelect 
             :currencies="currencies"
             :currency="fromCurrency"
-            @selected="fromCurrency = $event; fetchRate()" 
+            @currency-selected="fromCurrency = $event; fetchRate()" 
             />
          </div>
 
-         <div class="arrow">
+         <div class="arrow" @click="this.switchCurrencies" tabindex="0">
             <i class="fas fa-arrow-right"></i>
          </div>
 
@@ -23,7 +23,7 @@
             <CustomSelect 
             :currencies="currencies"
             :currency="toCurrency"
-            @selected="toCurrency = $event; fetchRate()" />
+            @currency-selected="toCurrency = $event; fetchRate()" />
          </div>
 
          <div class="show-rate">
@@ -281,10 +281,21 @@ export default {
          .then( data => data.rates[Object.keys(data.rates)[0]] )
          .then( rate => {
             this.rate = rate;
-            return rate * this.fromAmount;
+            return rate * this.fromAmount
          })
          .then( toAmount => this.toAmount = toAmount.toFixed(2))
          .catch(err => console.error(err))
+      },
+
+      switchCurrencies () {
+         const originalFromAmount = this.fromAmount
+         const orginalFromCurrency = this.fromCurrency
+
+         this.fromAmount = this.toAmount
+         this.toAmount = originalFromAmount
+         this.fromCurrency = this.toCurrency
+         this.toCurrency = orginalFromCurrency
+         this.fetchRate()
       }
    },
    
@@ -337,6 +348,11 @@ h2 {
 .arrow {
    grid-area: arrow;
    margin: auto;
+   outline: none;
+}
+.arrow:hover, .arrow:focus{
+   cursor: pointer;
+   color: #00c7cb;
 }
 .area1 { grid-area: area1; }
 .area2 { grid-area: area2; }

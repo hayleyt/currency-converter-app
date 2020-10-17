@@ -2,8 +2,8 @@
    <div class="custom-select" >
 
       <div class="selected" tabindex="0" :class="{ open: open }" @click="toggleDropdown" @keyup.enter="toggleDropdown">
-        <img :src="selected.flag" />
-        <span>{{selected.code}}</span>
+        <img :src="currency.flag" />
+        <span>{{currency.code}}</span>
       </div>
 
       <div class="dropdown" :class="{selectHide : !open}" >
@@ -18,12 +18,12 @@
                @keyup.enter="
                   selected = currency;
                   open = false;
-                  $emit('selected', currency);         
+                  $emit('currency-selected', currency);         
                "      
                @click="
                   selected = currency;
                   open = false;
-                  $emit('selected', currency);
+                  $emit('currency-selected', currency);
                ">
                   <img :src="currency.flag" />
                   <span>{{currency.code}}</span>
@@ -48,7 +48,6 @@ export default {
    },
    data() {
       return {
-         selected: this.currency,
          open: false,
          search: ""
       };
