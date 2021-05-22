@@ -5,11 +5,11 @@
       <div class="converter">
          <div class="area1">
             <label for="amount" class="label">Amount:</label>
-            <input type="number" inputmode="decimal" tabindex="0" id="amount" name="amount" v-model="fromAmount" @keyup="toAmount = calcToAmount" @change="toAmount = calcToAmount"/>
+            <input type="number" inputmode="decimal" tabindex="0" id="amount" name="amount" v-model="fromAmount" @keyup="toAmount = this.calcToAmount" @change="toAmount = this.calcToAmount"/>
             <CustomSelect 
             :currencies="currencies"
             :currency="fromCurrency"
-            @currency-selected="fromCurrency = $event; fetchRate()" 
+            @currency-selected="fromCurrency = $event; calculateRate()" 
             />
          </div>
 
@@ -23,7 +23,7 @@
             <CustomSelect 
             :currencies="currencies"
             :currency="toCurrency"
-            @currency-selected="toCurrency = $event; fetchRate()" />
+            @currency-selected="toCurrency = $event; calculateRate()" />
          </div>
 
          <div class="show-rate">
@@ -41,7 +41,6 @@
 
 <script>
 import CustomSelect from './components/CustomSelect.vue'
-
 export default {
    name: 'App',
    data () {
@@ -247,7 +246,8 @@ export default {
             }
          ],
          rate: "",
-         fromAmount: "1000",
+         allRates: "",
+         fromAmount: "100",
          toAmount: "",
          selectOpen: false,
          fromCurrency:
@@ -256,7 +256,7 @@ export default {
                code: "GBP",
                flag:  "./flags/gbp.png"
             },
-         toCurrency:             
+         toCurrency:
             {
                name: "US Dollars",
                code: "USD",
@@ -276,15 +276,22 @@ export default {
 
    methods: {
       fetchRate () {
-         fetch(`https://api.exchangeratesapi.io/latest?symbols=${this.toCurrency.code}&base=${this.fromCurrency.code}`)
+         fetch(`http://api.exchangeratesapi.io/v1/latest?access_key=48a79b0740607e90cf3fa108af087d2d&format=1`)
          .then( res => res.json() )
-         .then( data => data.rates[Object.keys(data.rates)[0]] )
-         .then( rate => {
-            this.rate = rate;
-            return rate * this.fromAmount
+         .then( data => {
+            this.allRates = data.rates
+            this.rate = (this.allRates.USD / this.allRates.GBP)
+            const to = this.rate * this.fromAmount
+            this.toAmount = to.toFixed(2)
          })
-         .then( toAmount => this.toAmount = toAmount.toFixed(2))
          .catch(err => console.error(err))
+      },
+
+      calculateRate () {
+         const fromCode = this.fromCurrency.code
+         const toCode = this.toCurrency.code
+         this.rate = this.allRates[toCode] / this.allRates[fromCode]
+         this.toAmount = (this.fromAmount * this.rate).toFixed(2)
       },
 
       switchCurrencies () {
@@ -295,7 +302,7 @@ export default {
          this.toAmount = originalFromAmount
          this.fromCurrency = this.toCurrency
          this.toCurrency = orginalFromCurrency
-         this.fetchRate()
+         this.calculateRate()
       }
    },
    
@@ -303,7 +310,7 @@ export default {
       this.fetchRate()
    },
 
-   components: {CustomSelect}
+   components: {CustomSelect},
 }
 </script>
 
