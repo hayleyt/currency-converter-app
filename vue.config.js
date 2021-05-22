@@ -1,3 +1,3 @@
 module.exports = {
-  publicPath: '/currency-converter/'
+  publicPath: '/currency-converter-app/'
 }
