@@ -32,7 +32,7 @@
             </p>
             <span>
                Rates are updated daily at 16.00 CET by the European Central Bank <br/>
-               <a href="https://exchangeratesapi.io/">https://exchangeratesapi.io/</a>
+               <a href="https://openexchangerates.org/">https://openexchangerates.org/</a>
             </span>
          </div>
       </div>
@@ -276,7 +276,7 @@ export default {
 
    methods: {
       fetchRate () {
-         fetch(`http://api.exchangeratesapi.io/v1/latest?access_key=48a79b0740607e90cf3fa108af087d2d&format=1`)
+         fetch(`https://openexchangerates.org/api/latest.json?app_id=bded967ea35c497baea3df49f54dc927`)
          .then( res => res.json() )
          .then( data => {
             this.allRates = data.rates
