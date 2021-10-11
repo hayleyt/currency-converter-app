@@ -157,7 +157,7 @@ span {
   height: 400px;
   border: 1px solid #999;
   position: absolute;
-  background-color: black;
+  background-color: white;
   left: 5px;
   right: 5px;
   z-index: 1;
